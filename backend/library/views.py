@@ -1,10 +1,7 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
-from django.db.models import F
-
-from rest_framework.decorators import api_view, permission_classes
-# from rest_framework.exceptions import NotFound
-from rest_framework import views, viewsets, permissions, status
+from rest_framework.exceptions import NotFound
+from rest_framework import views, viewsets, permissions
 from rest_framework.response import Response
 
 from .serializers import BookSerializer, Book
@@ -31,19 +28,29 @@ class DownloadAPIView(views.APIView):
         return response
 
 
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def book_a_book(request, *args, **kwargs):
-    obj = get_object_or_404(
-        Book,
-        pk=kwargs.get('pk'),
-        is_digital=False,
-        quantity__gt=0,
-    )
-    obj.quantity -= 1
-    obj.save()
-    # obj = Book.objects.filter(
-    #     pk=kwargs.get('pk'), is_digital=False, quantity__gt=0
-    # ).update(quantity=F('quantity') - 1)
-    print(obj)
-    return Response({'message': 'Вы забронировали книгу!'})
+class BookingAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        message = 'Ошибка! Попробуйте еще раз!'
+        obj = get_object_or_404(
+            Book,
+            pk=kwargs.get('pk'),
+            is_digital=False,
+        )
+
+        if request.user.reservations.filter(id=obj.id).exists():
+            obj.quantity += 1
+            request.user.reservations.remove(obj)
+            message = 'Вы отменили бронь книги!'
+        else:
+            if obj.quantity > 0:
+                obj.quantity -= 1
+                request.user.reservations.add(obj)
+                message = 'Вы забронировали книгу!'
+            else:
+                raise NotFound
+
+        obj.save()
+
+        return Response({'message': message})

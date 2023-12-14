@@ -13,5 +13,5 @@ urlpatterns = [
     path('', include(router.urls)),
         
     path('download/<uuid:pk>/', DownloadAPIView.as_view(), name='download'),
-    path('book-a-book/<uuid:pk>/', book_a_book, name='book-a-book'),
+    path('booking/<uuid:pk>/', BookingAPIView.as_view(), name='booking'),
 ]

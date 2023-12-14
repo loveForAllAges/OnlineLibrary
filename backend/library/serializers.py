@@ -7,7 +7,8 @@ from .models import Book
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='books-detail')
     download_url = serializers.SerializerMethodField()
-    book_a_book = serializers.SerializerMethodField()
+    booking = serializers.SerializerMethodField()
+    downloaded = serializers.IntegerField(max_value=9223372036854775807, min_value=0, read_only=True)
 
     class Meta:
         model = Book
@@ -23,11 +24,11 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
             )
         return data
 
-    def get_book_a_book(self, obj):
+    def get_booking(self, obj):
         data = None
         if not obj.is_digital:
             data = reverse(
-                'book-a-book',
+                'booking',
                 kwargs={'pk': obj.pk},
                 request=self.context.get('request'),
             )
