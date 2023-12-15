@@ -5,7 +5,7 @@ from .models import Book
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='books-detail')
+    # url = serializers.HyperlinkedIdentityField(view_name='book-detail')
     download_url = serializers.SerializerMethodField()
     booking = serializers.SerializerMethodField()
     downloaded = serializers.IntegerField(max_value=9223372036854775807, min_value=0, read_only=True)
