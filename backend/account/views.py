@@ -13,18 +13,18 @@ class UserAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class LoginAPIView(ObtainAuthToken):
-    pass
+    permission_classes = []
 
 
 class LogoutAPIView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
     def post(self, request, *args, **kwargs):
         request.user.auth_token.delete()
         return Response({'message': 'Вы вышли из системы.'}, status=status.HTTP_200_OK)
 
 
 class SignupAPIView(views.APIView):
+    permission_classes = []
+
     def post(self, request, *args, **kwargs):
         serializer = SignupSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

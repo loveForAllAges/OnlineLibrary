@@ -1,15 +1,20 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import NotFound
-from rest_framework import views, viewsets, permissions
+from rest_framework import views, viewsets, permissions, generics
 from rest_framework.response import Response
 
-from .serializers import BookSerializer, Book
+from .serializers import BookSerializer, AuthorSerializer, Book, Author
 
 
-class BookViewSet(viewsets.ModelViewSet):
+class AuthorListAPIView(generics.ListAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+
+class BookViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BookSerializer
-    queryset = Book.objects.all()
+    queryset = Book.objects.all().prefetch_related('authors')
 
 
 class DownloadAPIView(views.APIView):
@@ -28,13 +33,12 @@ class DownloadAPIView(views.APIView):
 
 
 class BookingAPIView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
     def get(self, request, *args, **kwargs):
         message = 'Ошибка! Попробуйте еще раз!'
         obj = get_object_or_404(
             Book,
             pk=kwargs.get('pk'),
+            is_digital=False,
         )
 
         if request.user.reservations.filter(id=obj.id).exists():
