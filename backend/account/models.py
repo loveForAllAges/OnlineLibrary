@@ -26,10 +26,11 @@ class Reservation(models.Model):
         on_delete=models.CASCADE, 
         related_name='reserverd'
     )
+    quantity = models.PositiveSmallIntegerField(default=0)
     status = models.CharField(max_length=32, choices=RESERVATION_CHOICES, default='reserverd')
     booking_date = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateTimeField()
-    return_date = models.DateTimeField()
+    start_date = models.DateTimeField(null=True, blank=True)
+    return_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
-        return self.created
+        return self.status

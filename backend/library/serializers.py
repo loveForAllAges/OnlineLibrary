@@ -18,10 +18,11 @@ class AuthorsForBookSerializer(serializers.ModelSerializer):
         fields = ('full_name', 'url')
 
     def get_url(self, obj):
-        return reverse(
+        data = reverse(
             'book-list',
             request=self.context.get('request'),
         )
+        return data + f'?authors={obj.id}'
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
@@ -47,7 +48,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_booking(self, obj):
         data = None
-        if not obj.is_digital:
+        if not obj.is_digital and obj.quantity > 0:
             data = reverse(
                 'booking',
                 kwargs={'pk': obj.pk},

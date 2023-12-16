@@ -23,6 +23,7 @@ class Book(models.Model):
     quantity = models.PositiveIntegerField(default=0)
     cover = models.ImageField(upload_to='images/covers/', null=True, blank=True)
     authors = models.ManyToManyField(Author)
+    publication = models.DateField()
 
     is_digital = models.BooleanField(default=False)
     attachment = models.FileField(upload_to='images/attachments/', null=True, blank=True)
