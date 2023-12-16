@@ -8,6 +8,10 @@ class User(AbstractUser):
     surname = models.CharField(max_length=128, blank=True)
     reservations = models.ManyToManyField(Book, through='Reservation')
 
+    @property
+    def full_name(self):
+        return f'{self.last_name} {self.first_name} {self.surname}'
+
 
 RESERVATION_CHOICES = {
     'reserved': 'Забронировано',

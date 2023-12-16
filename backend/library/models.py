@@ -20,7 +20,7 @@ class Book(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     title = models.CharField(max_length=128)
     description = models.TextField()
-    quantity = models.PositiveIntegerField(default=0)
+    quantity = models.PositiveSmallIntegerField(default=0)
     cover = models.ImageField(upload_to='images/covers/', null=True, blank=True)
     authors = models.ManyToManyField(Author)
     publication = models.DateField()

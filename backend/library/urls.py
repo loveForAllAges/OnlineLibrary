@@ -16,4 +16,5 @@ urlpatterns = [
         
     path('download/<uuid:pk>', DownloadAPIView.as_view(), name='download'),
     path('booking/<uuid:pk>', BookingAPIView.as_view(), name='booking'),
+    path('unbooking/<uuid:pk>', UnBookingAPIView.as_view(), name='unbooking'),
 ]

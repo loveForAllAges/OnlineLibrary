@@ -51,24 +51,11 @@ class DownloadAPIView(views.APIView):
 
 class BookingAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
-        # message = 'Ошибка! Попробуйте еще раз!'
         obj = get_object_or_404(
             Book,
             pk=kwargs.get('pk'),
             is_digital=False,
         )
-
-        # if request.user.reservations.filter(id=obj.id).exists():
-        #     obj.quantity += 1
-        #     request.user.reservations.remove(obj)
-        #     message = 'Вы отменили бронь книги!'
-        # else:
-        # if obj.quantity > 0:
-        #     obj.quantity -= 1
-        #     request.user.reservations.add(obj)
-        #     message = 'Вы забронировали книгу!'
-        # else:
-        #     raise NotFound
         if obj.quantity > 0:
             reservation, created = Reservation.objects.get_or_create( 
                 user=request.user,
@@ -83,3 +70,23 @@ class BookingAPIView(views.APIView):
             raise NotFound        
 
         return Response({'message': 'Вы забронировали книгу!'})
+
+
+class UnBookingAPIView(views.APIView):
+    def get(self, request, *args, **kwargs):
+        obj = get_object_or_404(
+            Book,
+            pk=kwargs.get('pk'),
+            is_digital=False,
+        )
+        reservation, created = Reservation.objects.get_or_create( 
+            user=request.user,
+            book=obj,
+            status='reserved'
+        )
+        reservation.quantity -= 1
+        reservation.delete() if reservation.quantity == 0 else reservation.save()
+        obj.quantity += 1
+        obj.save()
+
+        return Response({'message': 'Вы отменили бронирование книги!'})

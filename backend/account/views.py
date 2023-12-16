@@ -1,14 +1,21 @@
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework import generics, views, permissions, status
+from rest_framework import generics, views, permissions, status, viewsets
 from rest_framework.response import Response
 
-from .models import User
+from .models import User, Reservation
 from .serializers import UserSerializer, SignupSerializer
+from library.models import Book
+
+from django.db.models import Prefetch
 
 
-class UserAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all().prefetch_related('reservations')
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all().prefetch_related(
+        Prefetch('reservations', queryset=Reservation.objects.prefetch_related(
+            Prefetch('book', queryset=Book.objects.all())
+        ))
+    )
     serializer_class = UserSerializer
 
 

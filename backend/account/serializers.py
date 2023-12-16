@@ -27,36 +27,41 @@ class SignupSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ReservationSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='book-detail')
-    booking = serializers.SerializerMethodField()
-
+class BookForReservationSerializer(serializers.HyperlinkedModelSerializer):
+    unbooking = serializers.SerializerMethodField()
+    
     class Meta:
-        model = Reservation
-        fields = ('url', 'booking')
+        model = Book
+        fields = ('url', 'unbooking', 'cover', 'title', 'description')
 
-    def get_booking(self, obj):
+    def get_unbooking(self, obj):
         data = None
         if not obj.is_digital:
             data = reverse(
-                'booking',
+                'unbooking',
                 kwargs={'pk': obj.pk},
                 request=self.context.get('request'),
             )
         return data
 
 
-class UserSerializer(serializers.ModelSerializer):
-    reservations = ReservationSerializer(many=True, read_only=True)
+class ReservationSerializer(serializers.ModelSerializer):
+    book = BookForReservationSerializer()
+
+    class Meta:
+        model = Reservation
+        fields = ('quantity', 'book')
+
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    reservations = ReservationSerializer(many=True)
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ('full_name', 'reservations')
 
-    def create(self, validated_data):
-        return self.Meta.model.objects.create_user(**validated_data)
-
-    def update(self, instance, validated_data):
-        password = validated_data.pop('password')
-        instance.set_password(password)
-        return super().update(instance, validated_data)    
+    # def update(self, instance, validated_data):
+    #     password = validated_data.pop('password')
+    #     instance.set_password(password)
+    #     return super().update(instance, validated_data)    

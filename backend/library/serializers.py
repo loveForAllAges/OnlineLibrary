@@ -26,7 +26,6 @@ class AuthorsForBookSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
-    # url = serializers.HyperlinkedIdentityField(view_name='book-detail')
     download_url = serializers.SerializerMethodField()
     authors = AuthorsForBookSerializer(many=True, read_only=True)
     booking = serializers.SerializerMethodField()
