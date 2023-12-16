@@ -6,6 +6,8 @@ from .views import *
 
 
 urlpatterns = [
-    path('', include('rest_framework.urls')),
-    path('<int:pk>', UserAPIView.as_view(), name='user-detail'),
+    path('login', LoginAPIView.as_view()),
+    path('logout', LogoutAPIView.as_view()),
+    path('signup', SignupAPIView.as_view()),
+    path('users/<int:pk>', UserAPIView.as_view(), name='user-detail'),
 ]

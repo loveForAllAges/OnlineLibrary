@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 suburlpatters = [
     path('', include('library.urls')),
-    path('users/', include('account.urls')),
+    path('', include('account.urls')),
 ]
 
 
