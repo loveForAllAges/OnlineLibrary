@@ -15,21 +15,19 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
     def get_download_url(self, obj):
-        data = None
-        if obj.is_digital:
-            data = reverse(
-                'download', 
-                kwargs={'pk': obj.pk}, 
-                request=self.context.get('request'),
-            )
+        # data = None
+        data = reverse(
+            'download', 
+            kwargs={'pk': obj.pk}, 
+            request=self.context.get('request'),
+        )
         return data
 
     def get_booking(self, obj):
-        data = None
-        if not obj.is_digital:
-            data = reverse(
-                'booking',
-                kwargs={'pk': obj.pk},
-                request=self.context.get('request'),
-            )
+        # data = None
+        data = reverse(
+            'booking',
+            kwargs={'pk': obj.pk},
+            request=self.context.get('request'),
+        )
         return data

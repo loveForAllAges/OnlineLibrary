@@ -12,6 +12,6 @@ router.register(r'books', BookViewSet, basename='book')
 urlpatterns = [
     path('', include(router.urls)),
         
-    path('download/<uuid:pk>/', DownloadAPIView.as_view(), name='download'),
-    path('booking/<uuid:pk>/', BookingAPIView.as_view(), name='booking'),
+    path('download/<uuid:pk>', DownloadAPIView.as_view(), name='download'),
+    path('booking/<uuid:pk>', BookingAPIView.as_view(), name='booking'),
 ]

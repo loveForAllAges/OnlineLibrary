@@ -17,7 +17,6 @@ class DownloadAPIView(views.APIView):
         obj = get_object_or_404(
             Book,
             pk=kwargs.get('pk'),
-            is_digital=True,
             attachment__isnull=False,
         )
         file_path = obj.attachment.path
@@ -36,7 +35,6 @@ class BookingAPIView(views.APIView):
         obj = get_object_or_404(
             Book,
             pk=kwargs.get('pk'),
-            is_digital=False,
         )
 
         if request.user.reservations.filter(id=obj.id).exists():
